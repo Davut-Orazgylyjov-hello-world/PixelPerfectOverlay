@@ -37,11 +37,25 @@ namespace OrazgylyjovFuteres.PixelPerfectOverlay.Editor
             DrawPixelPerfectToggle();
             DrawActionButtons();
             DrawFooter();
+            DrawColorPicker();
 
             // Передаём настройки Canvas
             PixelPerfectOverlayCanvas.SetSettings(settings);
         }
 
+        private void DrawColorPicker()
+        {
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Overlay Color", EditorStyles.boldLabel);
+
+            Color newColor = EditorGUILayout.ColorField("Color", settings.overlayColor);
+            if (newColor != settings.overlayColor)
+            {
+                settings.overlayColor = newColor;
+                PixelPerfectOverlayCanvas.SetSettings(settings);
+            }
+        }
+        
         private void DrawHeader()
         {
             EditorGUILayout.Space();

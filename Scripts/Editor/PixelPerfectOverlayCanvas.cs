@@ -20,6 +20,13 @@ namespace OrazgylyjovFuteres.PixelPerfectOverlay.Editor
         {
             settings = currentSettings;
             EnsureCanvas();
+            
+            overlayImage.color = new Color(
+                settings.overlayColor.r,
+                settings.overlayColor.g,
+                settings.overlayColor.b,
+                settings.alpha
+            );
         }
 
         private static void EnsureCanvas()
@@ -60,7 +67,12 @@ namespace OrazgylyjovFuteres.PixelPerfectOverlay.Editor
                     new Vector2(0.5f, 0.5f))
                 : null;
             
-            overlayImage.color = new Color(1, 1, 1, settings.alpha);
+            overlayImage.color = new Color(
+                settings.overlayColor.r,
+                settings.overlayColor.g,
+                settings.overlayColor.b,
+                settings.alpha
+            );
 
             RectTransform rt = overlayImage.rectTransform;
             rt.anchorMin = Vector2.zero;

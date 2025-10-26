@@ -16,6 +16,7 @@ namespace OrazgylyjovFuteres.PixelPerfectOverlay.Editor
         public bool showGrid = true;
         public bool enablePixelPerfect = false;
         public bool show = true;
+        public Color overlayColor = Color.white;
 
         // --- Load / Save ---
         public void Load()
