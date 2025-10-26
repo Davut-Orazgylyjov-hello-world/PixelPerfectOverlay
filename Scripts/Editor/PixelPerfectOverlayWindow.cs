@@ -51,18 +51,44 @@ namespace OrazgylyjovFuteres.PixelPerfectOverlay.Editor
 
         private void DrawTextureField()
         {
-            EditorGUI.BeginChangeCheck();
-            settings.overlayTexture = (Texture2D) EditorGUILayout.ObjectField(
-                new GUIContent("Overlay Texture", "Mockup image (PNG) to overlay in editor"),
-                settings.overlayTexture,
-                typeof(Texture2D),
-                false);
+            if (settings.overlayTextures == null)
+                settings.overlayTextures = new Texture2D[0];
 
-            if (EditorGUI.EndChangeCheck())
+            EditorGUILayout.LabelField("Overlay Textures", EditorStyles.boldLabel);
+
+            int newSize = Mathf.Max(0, EditorGUILayout.IntField("Number of Textures", settings.overlayTextures.Length));
+            if (newSize != settings.overlayTextures.Length)
             {
-                settings.SaveTexturePath();
-                PixelPerfectOverlayCanvas.SetSettings(settings);
+                Texture2D[] newArray = new Texture2D[newSize];
+                for (int i = 0; i < Mathf.Min(newSize, settings.overlayTextures.Length); i++)
+                    newArray[i] = settings.overlayTextures[i];
+                settings.overlayTextures = newArray;
             }
+
+            for (int i = 0; i < settings.overlayTextures.Length; i++)
+            {
+                EditorGUI.BeginChangeCheck();
+                settings.overlayTextures[i] = (Texture2D)EditorGUILayout.ObjectField(
+                    $"Texture {i + 1}",
+                    settings.overlayTextures[i],
+                    typeof(Texture2D),
+                    false
+                );
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    // Сохраняем путь только для текущей текстуры, если нужно
+                    settings.SaveTexturePath();
+                    PixelPerfectOverlayCanvas.SetSettings(settings);
+                }
+            }
+
+            EditorGUILayout.Space();
+            // Показываем текущую выбранную текстуру
+            if (settings.CurrentTexture() != null)
+                EditorGUILayout.LabelField($"Current: {settings.CurrentTexture().name}");
+            else
+                EditorGUILayout.LabelField("Current: None");
         }
 
         private void DrawAlphaSlider()
@@ -84,14 +110,11 @@ namespace OrazgylyjovFuteres.PixelPerfectOverlay.Editor
             EditorGUILayout.LabelField("Display Options", EditorStyles.boldLabel);
 
             bool newShowScene = EditorGUILayout.Toggle(
-                new GUIContent("Show in Scene View", "Display overlay in Scene View"), settings.showInScene);
-            bool newShowGame = EditorGUILayout.Toggle(
-                new GUIContent("Show in Game View", "Display overlay in Game View (editor only)"), settings.showInGame);
-
-            if (newShowScene != settings.showInScene || newShowGame != settings.showInGame)
+                new GUIContent("Show", "Display overlay in View"), settings.show);
+           
+            if (newShowScene != settings.show)
             {
-                settings.showInScene = newShowScene;
-                settings.showInGame = newShowGame;
+                settings.show = newShowScene;
                 PixelPerfectOverlayCanvas.SetSettings(settings);
             }
         }
@@ -109,14 +132,33 @@ namespace OrazgylyjovFuteres.PixelPerfectOverlay.Editor
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Apply (preview)"))
+            // Включение/выключение overlay
+            string toggleLabel = settings.show ? "Disable Overlay" : "Enable Overlay";
+            if (GUILayout.Button(toggleLabel))
             {
-                ShowNotification(new GUIContent("Preview applied. Overlay is visible in Scene/Game view."));
+                settings.show = !settings.show;
+                PixelPerfectOverlayCanvas.SetSettings(settings);
             }
 
-            if (GUILayout.Button("Revert"))
+            // Кнопка переключения на следующую текстуру
+            if (GUILayout.Button("Next Overlay"))
             {
-                RemoveNotification();
+                if (settings.overlayTextures != null && settings.overlayTextures.Length > 0)
+                {
+                    settings.currentIndex = (settings.currentIndex + 1) % settings.overlayTextures.Length;
+                    PixelPerfectOverlayCanvas.SetSettings(settings);
+                }
+            }
+
+            // (Опционально) Кнопка переключения на предыдущую текстуру
+            if (GUILayout.Button("Previous Overlay"))
+            {
+                if (settings.overlayTextures != null && settings.overlayTextures.Length > 0)
+                {
+                    settings.currentIndex--;
+                    if (settings.currentIndex < 0) settings.currentIndex = settings.overlayTextures.Length - 1;
+                    PixelPerfectOverlayCanvas.SetSettings(settings);
+                }
             }
 
             EditorGUILayout.EndHorizontal();

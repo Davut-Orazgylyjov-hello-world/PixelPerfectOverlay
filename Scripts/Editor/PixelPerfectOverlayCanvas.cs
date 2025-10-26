@@ -53,9 +53,13 @@ namespace OrazgylyjovFuteres.PixelPerfectOverlay.Editor
             if (overlayImage == null || settings == null)
                 return;
 
-            overlayImage.sprite = settings.overlayTexture ? Sprite.Create(settings.overlayTexture,
-                new Rect(0, 0, settings.overlayTexture.width, settings.overlayTexture.height), 
-                new Vector2(0.5f, 0.5f)) : null;
+            Texture2D currentTexture = settings.CurrentTexture();
+            overlayImage.sprite = currentTexture
+                ? Sprite.Create(currentTexture,
+                    new Rect(0, 0, currentTexture.width, currentTexture.height),
+                    new Vector2(0.5f, 0.5f))
+                : null;
+            
             overlayImage.color = new Color(1, 1, 1, settings.alpha);
 
             RectTransform rt = overlayImage.rectTransform;
@@ -69,7 +73,7 @@ namespace OrazgylyjovFuteres.PixelPerfectOverlay.Editor
         {
             if (overlayCanvas != null && settings != null)
             {
-                overlayCanvas.gameObject.SetActive(settings.showInScene || settings.showInGame);
+                overlayCanvas.gameObject.SetActive(settings.show);
                 overlayCanvas.enabled = overlayCanvas.gameObject.activeSelf;
             }
         }
