@@ -67,24 +67,39 @@ namespace OrazgylyjovFuteres.PixelPerfectOverlay.Editor
 
             for (int i = 0; i < settings.overlayTextures.Length; i++)
             {
+                EditorGUILayout.BeginHorizontal();
+
                 EditorGUI.BeginChangeCheck();
-                settings.overlayTextures[i] = (Texture2D)EditorGUILayout.ObjectField(
-                    $"Texture {i + 1}",
+                settings.overlayTextures[i] = (Texture2D) EditorGUILayout.ObjectField(
                     settings.overlayTextures[i],
                     typeof(Texture2D),
-                    false
+                    false,
+                    GUILayout.Width(60),
+                    GUILayout.Height(60)
                 );
-
                 if (EditorGUI.EndChangeCheck())
                 {
-                    // Сохраняем путь только для текущей текстуры, если нужно
                     settings.SaveTexturePath();
                     PixelPerfectOverlayCanvas.SetSettings(settings);
                 }
+
+                // Рамка вокруг текущей активной текстуры
+                if (i == settings.currentIndex && settings.CurrentTexture() != null)
+                {
+                    Rect lastRect = GUILayoutUtility.GetLastRect();
+                    lastRect.x -= 2;
+                    lastRect.y -= 2;
+                    lastRect.width += 4;
+                    lastRect.height += 4;
+                    Color green = Color.green;
+                    green.a = 0.5f;
+                    EditorGUI.DrawRect(lastRect, green);
+                }
+
+                EditorGUILayout.EndHorizontal();
             }
 
             EditorGUILayout.Space();
-            // Показываем текущую выбранную текстуру
             if (settings.CurrentTexture() != null)
                 EditorGUILayout.LabelField($"Current: {settings.CurrentTexture().name}");
             else
@@ -111,7 +126,7 @@ namespace OrazgylyjovFuteres.PixelPerfectOverlay.Editor
 
             bool newShowScene = EditorGUILayout.Toggle(
                 new GUIContent("Show", "Display overlay in View"), settings.show);
-           
+
             if (newShowScene != settings.show)
             {
                 settings.show = newShowScene;
