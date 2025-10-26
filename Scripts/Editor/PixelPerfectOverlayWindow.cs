@@ -34,7 +34,6 @@ namespace OrazgylyjovFuteres.PixelPerfectOverlay.Editor
             DrawTextureField();
             DrawAlphaSlider();
             DrawDisplayOptions();
-            DrawPixelPerfectToggle();
             DrawActionButtons();
             DrawFooter();
             DrawColorPicker();
@@ -146,14 +145,6 @@ namespace OrazgylyjovFuteres.PixelPerfectOverlay.Editor
                 settings.show = newShowScene;
                 PixelPerfectOverlayCanvas.SetSettings(settings);
             }
-        }
-
-        private void DrawPixelPerfectToggle()
-        {
-            settings.enablePixelPerfect = EditorGUILayout.Toggle(
-                new GUIContent("Enable Pixel Perfect on Canvases",
-                    "Set Canvas.pixelPerfect = true on all Canvas components in the scene"),
-                settings.enablePixelPerfect);
         }
 
         private void DrawActionButtons()

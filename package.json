@@ -1,0 +1,13 @@
+ {
+  "name": "com.orazgylyjovfuteres.pixelperfectoverlay",
+  "version": "0.0.1",
+  "displayName": "Orazgylyjov PixelPerfectOverlay",
+  "description": "UI Pixel Perfect Overlay",
+  "unity": "2019.1",
+  "keywords": [
+    "ui pixel perfect overlay"
+  ],
+  "author": {
+    "name": "Orazgylyjov Davut"
+  }
+}
